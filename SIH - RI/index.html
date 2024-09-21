@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Status</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="./images/logo.jpg" alt="Logo">
+            <h1 style="color: blue;">Resource Allocation</h1>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search-bar" class="search-bar" placeholder="Search district...">
+            <button id="search-button">Search</button>
+        </div>
+        <div class="profile-container">
+            <img style="margin-right: 5px;" src="./images/user.jpg" alt="Profile Picture">
+            <h3 style="color: blue; font-family: 'Times New Roman', Times, serif;">Geethapriyan S</h3>
+        </div>
+    </div>
+    <a href="allocate-resource.html" class="allocate-resource-button">Allocate Resource</a>
+    </header>
+
+    <!-- Sidebar Section -->
+    <div class="sidebar">
+        <ul>
+            <li><i class="fas fa-tachometer-alt"></i>Dashboard</li>
+            <li><i class="fas fa-calendar-alt"></i>Calendar</li>
+            <li><i class="fas fa-envelope"></i>Email</li>
+            <li id="notification-menu"><i class="fas fa-bell"></i>Notification</li>
+            <li><i class="fas fa-cog"></i>Automation</li>
+            <li><i class="fas fa-chart-pie"></i>Overview</li>
+            <li id="resource-reallocation-menu"><i class="fas fa-users"></i>Resource Allocation</li>
+            <li><i class="fas fa-file-alt"></i>Report</li>
+        </ul>
+    </div>
+
+    <!-- Main Content Section for Resource Reallocation -->
+    <div class="main-content" id="resource-reallocation-content">
+        <h2>Application Status</h2>
+        <table class="resource-table">
+            <thead>
+                <tr>
+                    <th>DISTRICT</th>
+                    <th>PENDING FILES</th>
+                    <th>WORK LOAD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Main Content Section for Notifications -->
+    <div class="main-content" id="notification-content" style="display: none;">
+        <h2>VAO Resource Requests</h2>
+        <button class="reallocation-button">ALLOCATE</button>
+        <table class="vao-resource-table">
+            <thead>
+                <tr>
+                    <th>VAO NAME</th>
+                    <th>DISTRICT</th>
+                    <th>RESOURCES NEEDED</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>VAO1</td>
+                    <td>CHENGALPATTU</td>
+                    <td>3 additional clerks</td>
+                    <td class="status">Pending</td>
+                </tr>
+                <tr>
+                    <td>VAO2</td>
+                    <td>COIMBATORE</td>
+                    <td>2 additional computers</td>
+                    <td class="status">Pending</td>
+                </tr>
+                <tr>
+                    <td>VAO3</td>
+                    <td>DHARMAPURI</td>
+                    <td>5 additional clerks</td>
+                    <td class="status">Pending</td>
+                </tr>
+                <tr>
+                    <td>VAO4</td>
+                    <td>ERODE</td>
+                    <td>1 additional computer</td>
+                    <td class="status">Pending</td>
+                </tr>
+                <tr>
+                    <td>VAO5</td>
+                    <td>NAGAPATTINAM</td>
+                    <td>7 additional clerks</td>
+                    <td class="status">Pending</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FontAwesome Icons (for the sidebar) -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Script for handling reallocation, tab switching, and search functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const districts = [
+                { name: "CHENGALPATTU", pendingFiles: 10043 },
+                { name: "COIMBATORE", pendingFiles: 12300 },
+                { name: "DHARMAPURI", pendingFiles: 15000 },
+                { name: "ERODE", pendingFiles: 12100 },
+                { name: "NAGAPATTINAM", pendingFiles: 34000 },
+                { name: "VIRUDHUNAGAR", pendingFiles: 12300 },
+                { name: "TIRUVANNAMALAI", pendingFiles: 34903 },
+                { name: "KALLAKURICHI", pendingFiles: 23432 },
+                { name: "PERAMBALUR", pendingFiles: 12345 },
+                { name: "THOOTHUKUDI", pendingFiles: 9032 }
+            ];
+
+            function determineWorkload(pendingFiles) {
+                return pendingFiles > 15000 ? 'High' : 'Low';
+            }
+
+            function renderTable(districts) {
+                const tbody = document.querySelector('.resource-table tbody');
+                tbody.innerHTML = '';
+
+                districts.forEach(district => {
+                    const row = document.createElement('tr');
+                    const workload = determineWorkload(district.pendingFiles);
+
+                    row.innerHTML = `
+                        <td>${district.name}</td>
+                        <td>${district.pendingFiles}+</td>
+                        <td>${workload}</td>
+                    `;
+
+                    tbody.appendChild(row);
+                });
+            }
+
+            // Initial rendering
+            renderTable(districts);
+
+            // Reallocation button functionality
+            const reallocationButton = document.querySelector('.reallocation-button');
+            reallocationButton.addEventListener('click', function() {
+                // Update the status in the notification tab
+                const statuses = document.querySelectorAll('.status');
+                statuses.forEach(status => {
+                    status.textContent = 'Completed'; // Or set dynamic status based on logic
+                });
+                alert('Resource allocated successfully!!');
+            });
+
+            // Tab navigation
+            const notificationMenu = document.getElementById('notification-menu');
+            const resourceReallocationMenu = document.getElementById('resource-reallocation-menu');
+            const notificationContent = document.getElementById('notification-content');
+            const resourceReallocationContent = document.getElementById('resource-reallocation-content');
+
+            // Show the content of the active tab
+            function showContent(contentToShow, contentToHide) {
+                contentToShow.style.display = 'block';
+                contentToHide.style.display = 'none';
+            }
+
+            notificationMenu.addEventListener('click', function() {
+                showContent(notificationContent, resourceReallocationContent);
+                notificationMenu.classList.add('active');
+                resourceReallocationMenu.classList.remove('active');
+            });
+
+            resourceReallocationMenu.addEventListener('click', function() {
+                showContent(resourceReallocationContent, notificationContent);
+                resourceReallocationMenu.classList.add('active');
+                notificationMenu.classList.remove('active');
+            });
+
+            // Optionally, you can make one tab active by default
+            showContent(resourceReallocationContent, notificationContent);
+            resourceReallocationMenu.classList.add('active');
+
+            // Search functionality
+            const searchInput = document.getElementById('search-bar');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const rows = document.querySelectorAll('.resource-table tbody tr');
+
+                rows.forEach(row => {
+                    const districtName = row.querySelector('td').textContent.toLowerCase();
+                    if (districtName.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="./images/logo.jpg" alt="Logo" style="border-radius: 60%;">
+        </div>
+        <div class="search-bar" style="padding-left: 900px;">
+            <input type="text" placeholder="Search">
+            <button style="margin-bottom: 20px;padding:7px;">Search</button>
+        </div>
+        <div class="user-info">
+            <img src="./images/profile.jpg" alt="User Image"  >
+            <span>BOOPATHI V</span>
+        </div>
+    </header>
+    <nav class="sidebar">
+        <ul>
+            <li><a href="#" id="dashboard-link">Dashboard</a></li>
+            <li><a href="#" id="calendar-link">Calendar</a></li>
+            <li><a href="#" id="email-link">Email</a></li>
+            <li><a href="#" id="notification-link">Notification</a></li>
+            <li><a href="#" id="automation-link">Automation</a></li>
+            <li><a href="#" id="overview-link">Overview</a></li>
+            <li><a href="#" id="resource-link">Request Resource</a></li>
+            <li><a href="#" id="manage-application-link">Manage Application</a></li>
+            <li><a href="#" id="report-link">Report</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <!-- First page content (Dashboard) -->
+        <section id="dashboard-page">
+            <h1>Dashboard</h1>
+            <div class="grid-container">
+                <!-- Dashboard Cards -->
+                <div class="card">
+                    <h2>Total Applications</h2>
+                    <p>200,578</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+                <div class="card">
+                    <h2>Pending Applications</h2>
+                    <p>100,304</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+                <div class="card">
+                    <h2>Verified Applications</h2>
+                    <p>100,274</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+                <div class="card">
+                    <h2>Delivered Applications</h2>
+                    <p>50,578</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+                <!-- Charts Section -->
+                <div class="card large">
+                    <h2>Total Application</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="total-applications-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card large">
+                    <h2>Verified Applications</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="verified-applications-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card large">
+                    <h2>District Applications</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="district-applications-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card large">
+                    <h2>Delivery Applications</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="delivery-applications-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="notification-page" style="display: none;">
+            <h1>Notifications</h1>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Serial No.</th>
+                            <th>Application ID</th>
+                            <th>Application Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notificationTableBody">
+                        <!-- Dynamic data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        
+            <script>
+                document.getElementById("notification-link").addEventListener("click", function() {
+                    // Hide other sections
+                    document.getElementById("dashboard-page").style.display = "none";
+                    document.getElementById("automation-page").style.display = "none";
+                    document.getElementById("resource-allocation-page").style.display = "none";
+                    document.getElementById("notification-page").style.display = "block"; // Show the notification page
+        
+                    // Fetch the data from the Excel file
+                    fetch('APPLICATION DEMO.xlsx') // Ensure the file path is correct
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to load the Excel file');
+                            }
+                            return response.arrayBuffer();
+                        })
+                        .then(data => {
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const sheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[sheetName];
+        
+                            // Convert the sheet to JSON format
+                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        
+                            // Get the table body element
+                            const tableBody = document.getElementById("notificationTableBody");
+                            tableBody.innerHTML = ""; // Clear existing data
+        
+                            // Populate the table with data from the Excel file
+                            jsonData.forEach((row, index) => {
+                                if (index === 0) return; // Skip header row
+        
+                                const tr = document.createElement('tr');
+        
+                                // Create and append Serial No. cell
+                                const serialNoCell = document.createElement('td');
+                                serialNoCell.textContent = index; // Serial number based on the row index
+                                tr.appendChild(serialNoCell);
+        
+                                // Create and append Application ID cell
+                                const applicationIdCell = document.createElement('td');
+                                applicationIdCell.textContent = row[3] || ''; // Application ID in the first column
+                                tr.appendChild(applicationIdCell);
+        
+                                // Create and append Application Name cell
+                                const applicationNameCell = document.createElement('td');
+                                applicationNameCell.textContent = row[1] || ''; // Application Name in the second column
+                                tr.appendChild(applicationNameCell);
+        
+                                // Append the row to the table body
+                                tableBody.appendChild(tr);
+                            });
+                        })
+                        .catch(error => console.error('Error loading the file:', error));
+                });
+            </script>
+        </section>
+    
+        <section id="automation-page">
+            <title>Verification Allocation</title>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+            <style>
+                .container {
+                    width: 80%;
+                    max-width: 1200px;
+                    background-color: #fff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    margin-bottom: 5px; /* Reduced margin to minimize the gap */
+                }
+                
+                .header h1 {
+                    color: #004aad;
+                    margin: 0;
+                    font-size: 24px;
+                }
+                
+                .header button {
+                    background-color: #7ce01a;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+                
+                .table-container {
+                    margin-top: 0; /* Set to 0 to eliminate the gap */
+                    overflow-x: auto;
+                    width: 100%;
+                }
+                
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                
+                th, td {
+                    padding: 10px 20px;
+                    text-align: left;
+                }
+                
+                th {
+                    background-color: #004aad;
+                    color: white;
+                }
+                
+                td {
+                    background-color: #f9f9f9;
+                    border-bottom: 1px solid #ddd;
+                }
+                
+                .footer {
+                    background-color: #004aad;
+                    color: white;
+                    padding: 10px;
+                    text-align: center;
+                    margin-top: auto;
+                    width: 100%;
+                }
+                
+            </style>
+            <div class="container">
+                <div class="header">
+                
+                    <h1>Verification Allocation</h1>
+                    <button id="verifyAllBtn">Verify All</button>
+                </div> <br> <br> <br>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Application Name</th>
+                                <th>Aadhar Number</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataBody">
+                            <!-- Dynamic data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+               
+            </div>
+        
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Fetch the uploaded Excel file
+                    fetch('demo data1.xlsx')  // Ensure this is the correct path of the uploaded file
+                        .then(response => response.arrayBuffer())
+                        .then(data => {
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const sheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[sheetName];
+                
+                            // Convert sheet to JSON
+                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                
+                            const tableBody = document.getElementById("dataBody");
+                
+                            // Iterate over the data and insert rows
+                            jsonData.forEach((row, index) => {
+                                if (index === 0) return; // Skip the header row
+                
+                                const tr = document.createElement('tr');
+                
+                                // Create and append application name cell
+                                const applicationNameCell = document.createElement('td');
+                                applicationNameCell.textContent = row[1]; // Index 1 for 'Application Name'
+                                tr.appendChild(applicationNameCell);
+                
+                                // Create and append Aadhar number cell
+                                const aadharCell = document.createElement('td');
+                                aadharCell.textContent = row[2]; // Index 2 for 'Aadhar Number'
+                                tr.appendChild(aadharCell);
+                
+                                // Append the row to the table body
+                                tableBody.appendChild(tr);
+                            });
+                        })
+                        .catch(error => console.error('Error loading the file:', error));
+                });
+                document.getElementById("verifyAllBtn").addEventListener("click", function() {
+                    // Load the Application Excel file
+                    fetch('APPLICATION DEMO.xlsx')
+                        .then(response => {
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                            return response.arrayBuffer();
+                        })
+                        .then(appData => {
+                            console.log("Application data loaded successfully.");
+                
+                            const appWorkbook = XLSX.read(appData, { type: 'array' });
+                            const appSheetName = appWorkbook.SheetNames[0];
+                            const appWorksheet = appWorkbook.Sheets[appSheetName];
+                            const appJsonData = XLSX.utils.sheet_to_json(appWorksheet, { header: 1 });
+                
+                            console.log("Application JSON Data:", appJsonData);
+                
+                            // Extract Aadhar numbers from the application sheet (assuming Aadhar is in column 2)
+                            const appAadharNumbers = appJsonData.map(row => row[1]);
+                            console.log("Extracted Aadhar Numbers:", appAadharNumbers);
+                
+                            // Load the demo Excel file
+                            fetch('demo data1.xlsx')  // Ensure this is the correct path of the uploaded file
+                                .then(response => {
+                                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                                    return response.arrayBuffer();
+                                })
+                                .then(demoData => {
+                                    console.log("Demo data loaded successfully.");
+                
+                                    const demoWorkbook = XLSX.read(demoData, { type: 'array' });
+                                    const demoSheetName = demoWorkbook.SheetNames[0];
+                                    const demoWorksheet = demoWorkbook.Sheets[demoSheetName];
+                                    const demoJsonData = XLSX.utils.sheet_to_json(demoWorksheet, { header: 1 });
+                
+                                    console.log("Demo JSON Data:", demoJsonData);
+                
+                                    const tableBody = document.getElementById("dataBody");
+                                    tableBody.innerHTML = ''; // Clear existing table content
+                
+                                    // Iterate over the demo data and insert rows
+                                    demoJsonData.forEach((row, index) => {
+                                        if (index === 0) return; // Skip the header row
+                
+                                        const tr = document.createElement('tr');
+                
+                                        // Create and append application name cell
+                                        const applicationNameCell = document.createElement('td');
+                                        applicationNameCell.textContent = row[1]; // Assuming 'Application Name' is in the 1st column
+                                        tr.appendChild(applicationNameCell);
+                
+                                        // Create and append Aadhar number cell
+                                        const aadharCell = document.createElement('td');
+                                        aadharCell.textContent = row[2]; // Assuming 'Aadhar Number' is in the 2nd column
+                                        tr.appendChild(aadharCell);
+                
+                                        // Create and append Status cell
+                                        const statusCell = document.createElement('td');
+                                        if (appAadharNumbers.includes(row[2])) {
+                                            statusCell.textContent = 'Verified'; // Aadhar found in application sheet
+                                            statusCell.style.color = 'green'; // Optional: Style the status
+                                        } else {
+                                            statusCell.textContent = 'Not Verified'; // Aadhar not found in application sheet
+                                            statusCell.style.color = 'red'; // Optional: Style the status
+                                        }
+                                        tr.appendChild(statusCell);
+                
+                                        // Append the row to the table body
+                                        tableBody.appendChild(tr);
+                                    });
+                
+                                    // Add "Status" column to the table header
+                                    const tableHeader = document.getElementById("dataHeader");
+                                    const statusHeader = document.createElement('th');
+                                    statusHeader.textContent = 'Status';
+                                    tableHeader.appendChild(statusHeader);
+                
+                                })
+                                .catch(error => console.error('Error loading the demo file:', error));
+                        })
+                        .catch(error => console.error('Error loading the application file:', error));
+                });
+                                
+            </script>
+        </section>
+        
+        
+        <!-- Third page content (Resource Allocation) -->
+        <section id="resource-allocation-page" style="display: none;">
+            <style>
+                .container {
+                    display: flex;
+                    max-width: 1200px;
+                    width: 100%;
+                    background-color: #fff;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    overflow: hidden;
+                    margin: 20px;
+                }
+                .form-left {
+                    background-image: url('./images/resource.jpg'); /* Update the path to your image */
+                    background-size: cover;
+                    background-position: center;
+                    width: 40%;
+                    height: auto;
+                }
+                .form-right {
+                    padding: 30px;
+                    width: 40%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+                .form-right h2 {
+                    font-size: 28px;
+                    font-weight: bold;
+                    margin-bottom: 25px;
+                    color: #333;
+                }
+                .form-group {
+                    margin-bottom: 15px;
+                }
+                .form-group label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #333;
+                }
+                .form-group input,
+                .form-group select,
+                .form-group textarea {
+                    width: 100%;
+                    padding: 12px;
+                    font-size: 14px;
+                    border-radius: 6px;
+                    border: 1px solid #ccc;
+                    transition: border-color 0.3s ease-in-out;
+                }
+                .form-group input:focus,
+                .form-group select:focus,
+                .form-group textarea:focus {
+                    border-color: #007bff;
+                    outline: none;
+                }
+                .form-group textarea {
+                    resize: none;
+                }
+                .submit-btn {
+                    width: 100%;
+                    padding: 15px;
+                    background-color: #007bff;
+                    color: #fff;
+                    font-size: 16px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease-in-out;
+                }
+                .submit-btn:hover {
+                    background-color: #0056b3;
+                }
+                .hidden {
+                    display: none;
+                }
+                .form-footer {
+                    margin-top: 20px;
+                    font-size: 14px;
+                    color: #888;
+                    text-align: center;
+                }
+                .form-footer a {
+                    color: #007bff;
+                    text-decoration: none;
+                }
+                .form-footer a:hover {
+                    text-decoration: underline;
+                }
+                @media (max-width: 768px) {
+                    .container {
+                        flex-direction: column;
+                        width: 100%;
+                    }
+                    .form-left {
+                        width: 100%;
+                        height: 200px;
+                    }
+                    .form-right {
+                        width: 100%;
+                        padding: 20px;
+                    }
+                }
+            </style>
+        
+            <div class="container">
+                <div class="form-left">
+                    <!-- Add your image or background here -->
+                </div>
+                
+                <div class="form-right">
+                    
+                    <img style="display: inline-block;" src="./images/resource.jpg" alt="">
+                    <h2>Resource Allocation Form</h2>
+                    <form id="resourceAllocationForm">
+                        <div class="form-group">
+                            <label for="subdivision">Subdivision Name</label>
+                            <input type="text" id="subdivision" name="subdivision" placeholder="Enter subdivision name" required>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="resource">Resource Needed</label>
+                            <select id="resource" name="resource" required>
+                                <option value="" disabled selected>Select a resource</option>
+                                <option value="Computers">Computers</option>
+                                <option value="Technical Support Staff">Technical Support Staff</option>
+                                <option value="Increase Internet Bandwidth">Increase of Internet Bandwidth</option>
+                                <option value="Power Backup">Power Backup</option>
+                                <option value="Computer and Printers">Computer and Printers</option>
+                                <option value="Solar Power Backup">Solar Power Backup Systems</option>
+                                <option value="Training Programs">Training Programs for Staff</option>
+                                <option value="Mobile Service Unit">Mobile Service Unit</option>
+                                <option value="Integrated Database Access">Integrated Database Access</option>
+                                <option value="Other">Other Resource</option>
+                            </select>
+                        </div>
+        
+                        <div class="form-group hidden" id="otherResourceGroup">
+                            <label for="otherResourceDescription">Description of Other Resource</label>
+                            <textarea id="otherResourceDescription" name="otherResourceDescription" rows="4" placeholder="Describe the other resource"></textarea>
+                        </div>
+        
+                        <button type="submit" class="submit-btn">Submit Request</button>
+                    </form>
+        
+                    <div class="form-footer">
+                        <p>Already submitted a request? <a href="#">Check Status</a></p>
+                    </div>
+                </div>
+            </div>
+        
+            <script>
+                document.getElementById('resource').addEventListener('change', function() {
+                    var otherResourceGroup = document.getElementById('otherResourceGroup');
+                    if (this.value === 'Other') {
+                        otherResourceGroup.classList.remove('hidden');
+                    } else {
+                        otherResourceGroup.classList.add('hidden');
+                    }
+                });
+            </script>
+        </section>
+        
+        
+    </main>
+
+    <footer>
+        <p>@E-SEVAI</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

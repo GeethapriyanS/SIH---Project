@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Reset some basic styles */
+body, h1, ul, p, table, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #004aad;
+    padding: 10px 20px;
+    color: white;
+}
+
+header .logo img {
+    height: 50px;
+}
+
+header .search-bar {
+    display: flex;
+    align-items: center;
+}
+
+header .search-bar input {
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+}
+
+header .search-bar button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #00cc44;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+header .user-info {
+    display: flex;
+    align-items: center;
+}
+
+header .user-info img {
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
+    margin-right: 10px;
+}
+
+.sidebar {
+    background-color: #002c77;
+    color: white;
+    width: 200px;
+    padding-top: 20px;
+    position: fixed;
+    top: 70px;
+    bottom: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #004aad;
+}
+
+main {
+    flex-grow: 1;
+    margin-left: 220px;
+    padding: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+}
+
+.card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.card.large {
+    grid-column: span 2;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.male {
+    color: #004aad;
+}
+
+.female {
+    color: #cc0044;
+}
+
+.chart {
+    height: 200px;
+}
+
+.table-container {
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #004aad;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #002c77;
+}
+
+footer {
+    background-color: #004aad;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
+    
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="./images/logo.jpg" alt="Logo" style="border-radius: 60%;">
+        </div>
+        <div class="search-bar" style="padding-left: 900px;">
+            <input type="text" placeholder="Search">
+            <button style="margin-bottom: 20px;padding:7px;">Search</button>
+        </div>
+        <div class="user-info">
+            <img src="./images/user.jpg" alt="User Image"  style="border-radius:60%">
+            <span style="display:inline;">BOOPATHI V</span>
+        </div>
+    </header>
+
+    <nav class="sidebar">
+        <ul>
+            <li><a href="#" id="dashboard-link">Dashboard</a></li>
+            <li><a href="#" id="calendar-link">Calendar</a></li>
+            <li><a href="#" id="email-link">Email</a></li>
+            <li><a href="#" id="notification-link">Notification</a></li>
+            <li><a href="#" id="automation-link">Automation</a></li>
+            <li><a href="#" id="overview-link">Overview</a></li>
+            <li><a href="#" id="resource-link">Request Resource</a></li>
+            <li><a href="#" id="manage-application-link">Manage Application</a></li>
+            <li><a href="#" id="report-link">Report</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content">
+        <!-- First page content (Dashboard) -->
+        <section id="dashboard-page">
+            <h1>Dashboard</h1>
+            <div class="grid-container">
+                <!-- Dashboard Cards -->
+                <div class="card">
+                    <h2>Total Applications</h2>
+                    <p>200,578</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+                <div class="card">
+                    <h2>Pending Applications</h2>
+                    <p>100,304</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+                <div class="card">
+                    <h2>Verified Applications</h2>
+                    <p>100,274</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+                <div class="card">
+                    <h2>Delivered Applications</h2>
+                    <p>50,578</p>
+                    <p><span class="male">56% Male</span> <span class="female">44% Female</span></p>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="card large">
+                    <h2>Total Application</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="total-applications-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card large">
+                    <h2>Verified Applications</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="verified-applications-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card large">
+                    <h2>District Applications</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="district-applications-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card large">
+                    <h2>Delivery Applications</h2>
+                    <p>1000+ Last Month</p>
+                    <p>300+ Last Week</p>
+                    <p>10+ Yesterday</p>
+                    <div class="chart">
+                        <canvas id="delivery-applications-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            </section>
+        
+            <section id="notification-page" style="display: none;">
+                <style>
+                    /* General styles */
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 20px;
+                        background-color: #f4f4f4;
+                    }
+            
+                    .container {
+                        max-width: 1200px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        background-color: #fff;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    }
+            
+                    header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 20px;
+                    }
+            
+                    header h1 {
+                        margin: 0;
+                    }
+            
+                    .user-info {
+                        display: flex;
+                        align-items: center;
+                    }
+            
+                    .user-info button {
+                        padding: 8px 16px;
+                        margin-left: 10px;
+                        background-color: #f44336;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
+            
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+            
+                    table, th, td {
+                        border: 1px solid #ddd;
+                        padding: 8px;
+                    }
+            
+                    th {
+                        background-color: #f2f2f2;
+                    }
+            
+                    td {
+                        text-align: center;
+                    }
+            
+                    /* Button styles */
+                    .button-accept, .button-reject, .button-waiting {
+                        padding: 8px 12px;
+                        border: none;
+                        border-radius: 5px;
+                        color: white;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                        margin-right: 5px; /* Add some spacing between buttons */
+                    }
+            
+                    /* Specific button colors */
+                    .button-accept {
+                        background-color: #4CAF50; /* Green */
+                    }
+            
+                    .button-reject {
+                        background-color: #F44336; /* Red */
+                    }
+            
+                    .button-waiting {
+                        background-color: #FF9800; /* Orange */
+                    }
+            
+                    /* Hover effect to turn blue */
+                    .button-accept:hover, .button-reject:hover, .button-waiting:hover {
+                        background-color: #1E90FF; /* Blue */
+                    }
+            
+                    /* Transfer button styles */
+                    .transfer-button {
+                        padding: 10px 20px;
+                        border: none;
+                        border-radius: 5px;
+                        background-color: #3f51b5; /* A different shade of blue */
+                        color: white;
+                        cursor: pointer;
+                        margin-top: 20px; /* Space above the button */
+                        transition: background-color 0.3s ease;
+                        margin-left: 1000px;
+                    }
+            
+                    .transfer-button:hover {
+                        background-color: #303f9f; /* Darker blue on hover */
+                    }
+            
+                    footer {
+                        display: flex;
+                        justify-content: flex-end;
+                        padding-top: 10px;
+                    }
+                </style>
+            
+                <div class="container">
+                    <header>
+                        <h1>Resource Management</h1>
+                        <div class="user-info">
+                    
+                            <button style="margin-left: 850px;margin-bottom:20px" onclick="logout()">Logout</button>
+                        </div>
+                    </header>
+            
+                    <table id="requests-table">
+                        <thead>
+                            <tr>
+                                <th>Subdivision</th>
+                                <th>VAO</th>
+                                <th>Resource</th>
+                                <th>Actions</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows will be dynamically generated by JavaScript -->
+                        </tbody>
+                    </table>
+            
+                    <!-- Footer with the Transfer Requests button -->
+                        <button class="transfer-button" onclick="transferToThasildar()">Transfer Requests to Thasildar</button>
+                </div>
+            
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const requests = [
+                            { subdivision: 'Subdivision A', vao: 'VAO Ramesh', resource: 'Computers', status: 'Pending' },
+                            { subdivision: 'Subdivision B', vao: 'VAO Suresh', resource: 'Technical Support Staff', status: 'Pending' },
+                            { subdivision: 'Subdivision C', vao: 'VAO Mahesh', resource: 'Increase of Internet Bandwidth', status: 'Pending' },
+                            { subdivision: 'Subdivision D', vao: 'VAO Rakesh', resource: 'Power Backup', status: 'Pending' },
+                            { subdivision: 'Subdivision E', vao: 'VAO Naresh', resource: 'Computers and Printers', status: 'Pending' },
+                            { subdivision: 'Subdivision F', vao: 'VAO Kamlesh', resource: 'Solar Power Backup Systems', status: 'Pending' },
+                            { subdivision: 'Subdivision G', vao: 'VAO Ganesh', resource: 'Training Programs for Staff', status: 'Pending' },
+                            { subdivision: 'Subdivision H', vao: 'VAO Rajesh', resource: 'Mobile Service Unit', status: 'Pending' },
+                            { subdivision: 'Subdivision I', vao: 'VAO Dinesh', resource: 'Integrated Database Access', status: 'Pending' },
+                            { subdivision: 'Subdivision J', vao: 'VAO Mukesh', resource: 'Workflow Automation Software', status: 'Pending' }
+                        ];
+            
+                        const tableBody = document.querySelector("#requests-table tbody");
+                        requests.forEach((request, index) => {
+                            const row = document.createElement("tr");
+            
+                            row.innerHTML = `
+                                <td>${request.subdivision}</td>
+                                <td>${request.vao}</td>
+                                <td>${request.resource}</td>
+                                <td>
+                                    <button class="button-accept" onclick="updateStatus(${index}, 'Accepted', this)">Accept</button>
+                                    <button class="button-reject" onclick="updateStatus(${index}, 'Rejected', this)">Reject</button>
+                                    <button class="button-waiting" onclick="updateStatus(${index}, 'Waiting', this)">Waiting</button>
+                                </td>
+                                <td id="status-${index}">${request.status}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    });
+            
+                    function updateStatus(index, newStatus, clickedButton) {
+                        const statusElement = document.getElementById(`status-${index}`);
+                        statusElement.textContent = newStatus;
+            
+                        // Track the status type
+                        statusElement.setAttribute('data-status', newStatus);
+            
+                        // Optionally disable other buttons in the row to prevent multiple selections
+                        const buttons = clickedButton.parentElement.querySelectorAll("button");
+                        buttons.forEach(button => {
+                            if (button !== clickedButton) {
+                                button.disabled = true; // Disable other buttons
+                            }
+                        });
+                    }
+            
+                    function transferToThasildar() {
+                        alert('Requests transferred to Thasildar\'s notification page!');
+            
+                        // Add symbols for accepted, rejected, and waiting statuses
+                        const statuses = document.querySelectorAll('[id^="status-"]');
+                        statuses.forEach(statusElement => {
+                            const status = statusElement.getAttribute('data-status');
+                            if (status === 'Accepted') {
+                                statusElement.innerHTML += ' <span style="color: green;">✅</span>'; // Tick mark for accepted
+                            } else if (status === 'Rejected') {
+                                statusElement.innerHTML += ' <span style="color: red;">❌</span>'; // Cross mark for rejected
+                            } else if (status === 'Waiting') {
+                                statusElement.innerHTML += ' <span style="color: orange;">⏳</span>'; // Clock/hourglass for waiting
+                            }
+                        });
+            
+                        // You can add additional logic here to handle actual transfer operations
+                    }
+            
+                    function logout() {
+                        alert("Logged out");
+                        // Logic for logging out
+                    }
+                </script>
+            </section>
+            
+
+
+        <section id="automation-page">
+            <title>Verification Allocation</title>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+            <style>
+                .container {
+                    width: 80%;
+                    max-width: 1200px;
+                    background-color: #fff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    margin-bottom: 5px; /* Reduced margin to minimize the gap */
+                }
+                
+                .header h1 {
+                    color: #004aad;
+                    margin: 0;
+                    font-size: 24px;
+                }
+                
+                .header button {
+                    background-color: #7ce01a;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+                
+                .table-container {
+                    margin-top: 0; /* Set to 0 to eliminate the gap */
+                    overflow-x: auto;
+                    width: 100%;
+                }
+                
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                
+                th, td {
+                    padding: 10px 20px;
+                    text-align: left;
+                }
+                
+                th {
+                    background-color: #004aad;
+                    color: white;
+                }
+                
+                td {
+                    background-color: #f9f9f9;
+                    border-bottom: 1px solid #ddd;
+                }
+                
+                .footer {
+                    background-color: #004aad;
+                    color: white;
+                    padding: 10px;
+                    text-align: center;
+                    margin-top: auto;
+                    width: 100%;
+                }
+                
+            </style>
+            
+        
+            <div class="container">
+                <div class="header">
+                
+                    <h1>Verification Allocation</h1>
+                    <button id="verifyAllBtn">Verify All</button>
+                </div> <br> <br> <br>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Application Name</th>
+                                <th>Aadhar Number</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataBody">
+                            <!-- Dynamic data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+               
+            </div>
+        
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    // Fetch the uploaded Excel file
+                    fetch('demo data.xlsx')  // Ensure this is the correct path of the uploaded file
+                        .then(response => response.arrayBuffer())
+                        .then(data => {
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const sheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[sheetName];
+                
+                            // Convert sheet to JSON
+                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                
+                            const tableBody = document.getElementById("dataBody");
+                
+                            // Iterate over the data and insert rows
+                            jsonData.forEach((row, index) => {
+                                if (index === 0) return; // Skip the header row
+                
+                                const tr = document.createElement('tr');
+                
+                                // Create and append application name cell
+                                const applicationNameCell = document.createElement('td');
+                                applicationNameCell.textContent = row[1]; // Index 1 for 'Application Name'
+                                tr.appendChild(applicationNameCell);
+                
+                                // Create and append Aadhar number cell
+                                const aadharCell = document.createElement('td');
+                                aadharCell.textContent = row[2]; // Index 2 for 'Aadhar Number'
+                                tr.appendChild(aadharCell);
+                
+                                // Append the row to the table body
+                                tableBody.appendChild(tr);
+                            });
+                        })
+                        .catch(error => console.error('Error loading the file:', error));
+                });
+                document.getElementById("verifyAllBtn").addEventListener("click", function() {
+                    // Load the Application Excel file
+                    fetch('APPLICATION DEMO.xlsx')
+                        .then(response => {
+                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                            return response.arrayBuffer();
+                        })
+                        .then(appData => {
+                            console.log("Application data loaded successfully.");
+                
+                            const appWorkbook = XLSX.read(appData, { type: 'array' });
+                            const appSheetName = appWorkbook.SheetNames[0];
+                            const appWorksheet = appWorkbook.Sheets[appSheetName];
+                            const appJsonData = XLSX.utils.sheet_to_json(appWorksheet, { header: 1 });
+                
+                            console.log("Application JSON Data:", appJsonData);
+                
+                            // Extract Aadhar numbers from the application sheet (assuming Aadhar is in column 2)
+                            const appAadharNumbers = appJsonData.map(row => row[1]);
+                            console.log("Extracted Aadhar Numbers:", appAadharNumbers);
+                
+                            // Load the demo Excel file
+                            fetch('demo data.xlsx')  // Ensure this is the correct path of the uploaded file
+                                .then(response => {
+                                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                                    return response.arrayBuffer();
+                                })
+                                .then(demoData => {
+                                    console.log("Demo data loaded successfully.");
+                
+                                    const demoWorkbook = XLSX.read(demoData, { type: 'array' });
+                                    const demoSheetName = demoWorkbook.SheetNames[0];
+                                    const demoWorksheet = demoWorkbook.Sheets[demoSheetName];
+                                    const demoJsonData = XLSX.utils.sheet_to_json(demoWorksheet, { header: 1 });
+                
+                                    console.log("Demo JSON Data:", demoJsonData);
+                
+                                    const tableBody = document.getElementById("dataBody");
+                                    tableBody.innerHTML = ''; // Clear existing table content
+                
+                                    // Iterate over the demo data and insert rows
+                                    demoJsonData.forEach((row, index) => {
+                                        if (index === 0) return; // Skip the header row
+                
+                                        const tr = document.createElement('tr');
+                
+                                        // Create and append application name cell
+                                        const applicationNameCell = document.createElement('td');
+                                        applicationNameCell.textContent = row[1]; // Assuming 'Application Name' is in the 1st column
+                                        tr.appendChild(applicationNameCell);
+                
+                                        // Create and append Aadhar number cell
+                                        const aadharCell = document.createElement('td');
+                                        aadharCell.textContent = row[2]; // Assuming 'Aadhar Number' is in the 2nd column
+                                        tr.appendChild(aadharCell);
+                
+                                        // Create and append Status cell
+                                        const statusCell = document.createElement('td');
+                                        if (appAadharNumbers.includes(row[2])) {
+                                            statusCell.textContent = 'Verified'; // Aadhar found in application sheet
+                                            statusCell.style.color = 'green'; // Optional: Style the status
+                                        } else {
+                                            statusCell.textContent = 'Not Verified'; // Aadhar not found in application sheet
+                                            statusCell.style.color = 'red'; // Optional: Style the status
+                                        }
+                                        tr.appendChild(statusCell);
+                
+                                        // Append the row to the table body
+                                        tableBody.appendChild(tr);
+                                    });
+                
+                                    // Add "Status" column to the table header
+                                    const tableHeader = document.getElementById("dataHeader");
+                                    const statusHeader = document.createElement('th');
+                                    statusHeader.textContent = 'Status';
+                                    tableHeader.appendChild(statusHeader);
+                
+                                })
+                                .catch(error => console.error('Error loading the demo file:', error));
+                        })
+                        .catch(error => console.error('Error loading the application file:', error));
+                });
+                                
+            </script>
+        </section>
+        
+        
+        <!-- Third page content (Resource Allocation) -->
+        <section id="resource-allocation-page" style="display: none;">
+            <style>
+                .container {
+                    display: flex;
+                    max-width: 1200px;
+                    width: 100%;
+                    background-color: #fff;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    overflow: hidden;
+                    margin: 20px;
+                }
+                .form-left {
+                    background-image: url('image.jpg'); /* Update the path to your image */
+                    background-size: cover;
+                    background-position: center;
+                    width: 60%;
+                    height: auto;
+                }
+                .form-right {
+                    padding: 30px;
+                    width: 40%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+                .form-right h2 {
+                    font-size: 28px;
+                    font-weight: bold;
+                    margin-bottom: 25px;
+                    color: #333;
+                }
+                .form-group {
+                    margin-bottom: 15px;
+                }
+                .form-group label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #333;
+                }
+                .form-group input,
+                .form-group select,
+                .form-group textarea {
+                    width: 100%;
+                    padding: 12px;
+                    font-size: 14px;
+                    border-radius: 6px;
+                    border: 1px solid #ccc;
+                    transition: border-color 0.3s ease-in-out;
+                }
+                .form-group input:focus,
+                .form-group select:focus,
+                .form-group textarea:focus {
+                    border-color: #007bff;
+                    outline: none;
+                }
+                .form-group textarea {
+                    resize: none;
+                }
+                .submit-btn {
+                    width: 100%;
+                    padding: 15px;
+                    background-color: #007bff;
+                    color: #fff;
+                    font-size: 16px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease-in-out;
+                }
+                .submit-btn:hover {
+                    background-color: #0056b3;
+                }
+                .hidden {
+                    display: none;
+                }
+                .form-footer {
+                    margin-top: 20px;
+                    font-size: 14px;
+                    color: #888;
+                    text-align: center;
+                }
+                .form-footer a {
+                    color: #007bff;
+                    text-decoration: none;
+                }
+                .form-footer a:hover {
+                    text-decoration: underline;
+                }
+                @media (max-width: 768px) {
+                    .container {
+                        flex-direction: column;
+                        width: 100%;
+                    }
+                    .form-left {
+                        width: 100%;
+                        height: 200px;
+                    }
+                    .form-right {
+                        width: 100%;
+                        padding: 20px;
+                    }
+                }
+            </style>
+        
+            <div class="container">
+                <div class="form-left">
+                    <!-- Add your image or background here -->
+                </div>
+                
+                <div class="form-right">
+                    <h2>Resource Allocation Form</h2>
+                    <form id="resourceAllocationForm">
+                        <div class="form-group">
+                            <label for="subdivision">Subdivision Name</label>
+                            <input type="text" id="subdivision" name="subdivision" placeholder="Enter subdivision name" required>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="resource">Resource Needed</label>
+                            <select id="resource" name="resource" required>
+                                <option value="" disabled selected>Select a resource</option>
+                                <option value="Computers">Computers</option>
+                                <option value="Technical Support Staff">Technical Support Staff</option>
+                                <option value="Increase Internet Bandwidth">Increase of Internet Bandwidth</option>
+                                <option value="Power Backup">Power Backup</option>
+                                <option value="Computer and Printers">Computer and Printers</option>
+                                <option value="Solar Power Backup">Solar Power Backup Systems</option>
+                                <option value="Training Programs">Training Programs for Staff</option>
+                                <option value="Mobile Service Unit">Mobile Service Unit</option>
+                                <option value="Integrated Database Access">Integrated Database Access</option>
+                                <option value="Other">Other Resource</option>
+                            </select>
+                        </div>
+        
+                        <div class="form-group hidden" id="otherResourceGroup">
+                            <label for="otherResourceDescription">Description of Other Resource</label>
+                            <textarea id="otherResourceDescription" name="otherResourceDescription" rows="4" placeholder="Describe the other resource"></textarea>
+                        </div>
+        
+                        <button type="submit" class="submit-btn">Submit Request</button>
+                    </form>
+        
+                    <div class="form-footer">
+                        <p>Already submitted a request? <a href="#">Check Status</a></p>
+                    </div>
+                </div>
+            </div>
+        
+            <script>
+                document.getElementById('resource').addEventListener('change', function() {
+                    var otherResourceGroup = document.getElementById('otherResourceGroup');
+                    if (this.value === 'Other') {
+                        otherResourceGroup.classList.remove('hidden');
+                    } else {
+                        otherResourceGroup.classList.add('hidden');
+                    }
+                });
+            </script>
+        </section>
+        
+        
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>document.getElementById('dashboard-link').addEventListener('click', function () {
+        showPage('dashboard-page');
+    });
+    
+    document.getElementById('automation-link').addEventListener('click', function () {
+        showPage('automation-page');
+    });
+    
+    document.getElementById('resource-link').addEventListener('click', function () {
+        showPage('resource-allocation-page');
+    });
+    
+    document.getElementById('notification-link').addEventListener('click', function () {
+        showPage('notification-page');
+    });
+    
+    function showPage(pageId) {
+        const pages = ['dashboard-page', 'automation-page', 'resource-allocation-page','notification-page'];
+        pages.forEach(page => {
+            document.getElementById(page).style.display = 'none';
+        });
+        document.getElementById(pageId).style.display = 'block';
+    }
+    
+    // Initialize with Dashboard as the default page
+    showPage('dashboard-page');
+    
+    // Chart.js implementation for Dashboard
+    
+    const ctx1 = document.getElementById('total-applications-chart').getContext('2d');
+    const totalApplicationsChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Total Applications',
+                data: [120, 150, 180, 130, 160, 190, 210, 240, 220, 200, 180, 240],
+                backgroundColor: '#004aad'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
+    const ctx2 = document.getElementById('verified-applications-chart').getContext('2d');
+    const verifiedApplicationsChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+                {
+                    label: 'Verified Applications Data 1',
+                    data: [50, 60, 70, 60, 80, 90, 100, 110, 90, 80, 60, 70],
+                    borderColor: '#004aad',
+                    fill: false
+                },
+                {
+                    label: 'Verified Applications Data 2',
+                    data: [30, 40, 50, 40, 60, 70, 80, 90, 70, 60, 40, 50],
+                    borderColor: '#cc0044',
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
+    const ctx3 = document.getElementById('district-applications-chart').getContext('2d');
+    const districtApplicationsChart = new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+            labels: ['District 1', 'District 2', 'District 3', 'District 4'],
+            datasets: [{
+                label: 'District Applications',
+                data: [36, 57, 63, 71],
+                backgroundColor: ['#004aad', '#00cc44', '#cc0044', '#f4a500']
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+    
+    const ctx4 = document.getElementById('delivery-applications-chart').getContext('2d');
+    const deliveryApplicationsChart = new Chart(ctx4, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                {
+                    label: 'Delivery Applications A',
+                    data: [33, 28, 26, 30, 32, 25, 29],
+                    borderColor: '#004aad',
+                    fill: false
+                },
+                {
+                    label: 'Delivery Applications B',
+                    data: [13, 18, 16, 20, 22, 15, 19],
+                    borderColor: '#00cc44',
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    </script>
+</body>
+
+</html>
